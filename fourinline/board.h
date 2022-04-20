@@ -5,9 +5,10 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 
-#define ROWS        6
-#define COLS        7
+#define ROWS        4 //6
+#define COLS        4 //7
 
 #if ROWS > 9 || COLS > 9
 #error "Not yet implemented"
@@ -42,4 +43,5 @@ void board_print_boarder(void);
 void board_print_header(BoarderSide side);
 void board_print_row(uint32_t row, const Board *b);
 char board_get_token_logo(TokenState s);
-void board_put_token(TokenState s, uint32_t col, Board *b);
+bool board_put_token(TokenState s, uint32_t col, Board *b);
+TokenState board_find_win(Board *b);

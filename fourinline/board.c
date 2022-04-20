@@ -1,15 +1,20 @@
 #include <stdio.h>
 #include "board.h"
 #include <string.h>
-
+#include <stdbool.h>
+#include <assert.h>
 
 void board_init(Board *b)
 {
+    assert(NULL != b);
+
     memset(b->board, eEmpty, ROWS*COLS);
 }
 
 void board_display(const Board* b)
 {
+    assert(NULL != b);
+
     board_print_header(eUpper);
 
     for(unsigned int row=0; row<ROWS; ++row)
@@ -20,10 +25,17 @@ void board_display(const Board* b)
     }
 
     board_print_header(eDowner);
+    putc('\n', stdout);
+
+//    TokenState player = board_find_win(b);
+//    if(eEmpty != player)
+//    {
+//        printf("Player %u win!\n\n", (uint32_t)player);
+//    }
 }
 
 
-void board_print_boarder()
+void board_print_boarder(void)
 {
     char c;
     for(uint32_t i=0; i<m_rowBoarderLength; ++i)
@@ -96,6 +108,9 @@ char board_get_token_logo(TokenState s)
 
 void board_print_row(uint32_t row, const Board *b)
 {
+    assert(ROWS > row);
+    assert(NULL != b);
+
     const TokenState *rowData = &b->board[row*COLS];
     uint32_t num = 0;
     char c;
@@ -115,13 +130,14 @@ void board_print_row(uint32_t row, const Board *b)
     putc('\n', stdout);
 }
 
-void board_put_token(TokenState s, uint32_t col, Board *b)
+bool board_put_token(TokenState s, uint32_t col, Board *b)
 {
-    if(s == eEmpty)
+    if( (COLS < col || col < 1) || eEmpty == s)
     {
-        return;     // Do not support token delete.
+        return false;
     }
 
+    --col;
     char c = board_get_token_logo(s);
     TokenState *rowData;
 
@@ -131,7 +147,24 @@ void board_put_token(TokenState s, uint32_t col, Board *b)
         if(*field == eEmpty)
         {
             *field = s;
-            break;
+            return true;
         }
     }
+
+    return false;
+}
+
+TokenState board_find_win(Board *b)
+{
+//    // TODO: Diagonal win
+//
+//    for(int row=ROWS-1; row>=0; --row)
+//    {
+//        TokenState* field = &b->board[row*COLS+col];
+//        if(*field == eEmpty)
+//        {
+//            *field = s;
+//            break;
+//        }
+//    }
 }
